@@ -40,9 +40,14 @@ const Navbar = () => {
     >
       <div className="container-wide flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3 group">
-          <div className="w-10 h-10 rounded-full bg-gradient-gold flex items-center justify-center shadow-gold">
-            <span className="font-display text-xl font-bold text-primary-foreground">P</span>
-          </div>
+          <img
+            src="/logo.png"
+            alt="Pragathi Educational Society — Centenary Colony"
+            width={44}
+            height={44}
+            className="h-10 w-10 sm:h-11 sm:w-11 shrink-0 object-contain rounded-full ring-1 ring-border/50 shadow-elegant"
+            decoding="async"
+          />
           <div className="hidden sm:block">
             <div className="font-display text-lg leading-tight text-gradient-gold">Pragathi Alumni</div>
             <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground">Centenary Colony</div>
