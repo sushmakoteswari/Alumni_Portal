@@ -1,21 +1,12 @@
 import PageLayout from "@/components/layout/PageLayout";
 import PageHero from "@/components/sections/PageHero";
-import g1 from "@/assets/gallery-1.jpg";
-import g2 from "@/assets/gallery-2.jpg";
-import g3 from "@/assets/gallery-3.jpg";
-import g4 from "@/assets/gallery-4.jpg";
-import hero from "@/assets/hero-campus.jpg";
+import { publicGalleryUrls } from "@/data/publicGallery";
 
-const items = [
-  { src: g1, alt: "Pragathi High School class group photo", span: "row-span-2" },
-  { src: g2, alt: "Pragathi students celebrating graduation", span: "" },
-  { src: hero, alt: "Pragathi campus at golden hour", span: "" },
-  { src: g3, alt: "Alumni reunion candlelight dinner", span: "" },
-  { src: g4, alt: "Pragathi school building at twilight", span: "row-span-2" },
-  { src: g2, alt: "Annual day celebrations", span: "" },
-  { src: g1, alt: "Class portrait from earlier batches", span: "" },
-  { src: g3, alt: "Reunion gathering of friends", span: "" },
-];
+const items = publicGalleryUrls.map((src, i) => ({
+  src,
+  alt: `Pragathi alumni memory — photo ${i + 1}`,
+  span: i % 4 === 0 ? "row-span-2" : "",
+}));
 
 const Gallery = () => (
   <PageLayout

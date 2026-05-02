@@ -5,6 +5,8 @@ export interface Alumnus {
   role: string;
   city: string;
   initials: string;
+  /** Public profile URL when provided (directory only) */
+  linkedin?: string;
 }
 
 export const alumni: Alumnus[] = [

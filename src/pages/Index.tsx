@@ -2,9 +2,7 @@ import { Link } from "react-router-dom";
 import { ArrowRight, Calendar, Users, Heart, Sparkles, Quote } from "lucide-react";
 import PageLayout from "@/components/layout/PageLayout";
 import heroImg from "@/assets/hero-campus.jpg";
-import g1 from "@/assets/gallery-1.jpg";
-import g2 from "@/assets/gallery-2.jpg";
-import g3 from "@/assets/gallery-3.jpg";
+import { publicGalleryUrls } from "@/data/publicGallery";
 
 const Index = () => {
   return (
@@ -138,8 +136,8 @@ const Index = () => {
             <Link to="/gallery" className="gold-link text-sm">View full gallery →</Link>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
-            {[g1, g2, g3].map((src, i) => (
-              <div key={i} className="group relative aspect-[4/5] overflow-hidden rounded-2xl border border-border/60">
+            {publicGalleryUrls.slice(10, 13).map((src) => (
+              <div key={src} className="group relative aspect-[4/5] overflow-hidden rounded-2xl border border-border/60">
                 <img
                   src={src}
                   alt="Pragathi alumni memory"

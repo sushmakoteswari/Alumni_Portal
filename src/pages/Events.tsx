@@ -6,7 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const events = [
   {
-    id: 1, title: "Annual Alumni Reunion 2026", date: "March 1, 2026", time: "4:00 PM onwards",
+    id: 1, title: "Annual Alumni Reunion 2026", date: "May 3, 2026", time: "4:00 PM onwards",
     location: "Pragathi High School Campus, Centenary Colony", attendees: 320, featured: true,
     desc: "An evening of memories — campus tour, talent showcase, dinner under the stars, and the lighting of the heritage lamp by our seniormost batch.",
   },

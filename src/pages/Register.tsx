@@ -1,19 +1,10 @@
 import { useState } from "react";
-import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 import PageLayout from "@/components/layout/PageLayout";
 import PageHero from "@/components/sections/PageHero";
 import { Sparkles } from "lucide-react";
+import { alumniRegistrationSchema } from "@/lib/alumniRegistrationSchema";
 import { submitAlumniRegistrationToGoogleForm } from "@/lib/submitGoogleForm";
-
-const schema = z.object({
-  name: z.string().trim().min(2, "Please enter your full name").max(100),
-  batch: z.string().regex(/^(19|20)\d{2}$/, "Enter a valid year"),
-  email: z.string().trim().email("Invalid email").max(255),
-  city: z.string().trim().min(2, "Enter your current city").max(80),
-  linkedin: z.string().trim().max(200).optional().or(z.literal("")),
-  message: z.string().trim().max(500).optional().or(z.literal("")),
-});
 
 const Register = () => {
   const { toast } = useToast();
@@ -23,31 +14,51 @@ const Register = () => {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+  
     const form = new FormData(e.currentTarget);
-    const data = Object.fromEntries(form.entries());
-    const parsed = schema.safeParse(data);
+    const raw = Object.fromEntries(form.entries());
+  
+    const data = {
+      name: String(raw.name || ""),
+      batch: String(raw.batch || ""),
+      email: String(raw.email || ""),
+      city: String(raw.city || ""),
+      phone: String(raw.phone || ""),
+      linkedin: String(raw.linkedin || ""),
+      message: String(raw.message || ""),
+    };
+  
+    const parsed = alumniRegistrationSchema.safeParse(data);
+  
     if (!parsed.success) {
       const errs: Record<string, string> = {};
-      parsed.error.errors.forEach((er) => { errs[er.path[0] as string] = er.message; });
+      parsed.error.errors.forEach((er) => {
+        errs[er.path[0] as string] = er.message;
+      });
       setErrors(errs);
       return;
     }
+  
     setErrors({});
     setSubmitting(true);
+  
     try {
       await submitAlumniRegistrationToGoogleForm(parsed.data, volunteer);
+  
       toast({
         title: "Welcome home, Pragathian! 🌟",
-        description: "Your registration has been received. We'll be in touch soon.",
+        description: "Your registration has been received.",
       });
+  
       (e.target as HTMLFormElement).reset();
       setVolunteer(false);
+  
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Could not reach the server. Try again or contact us.";
       toast({
         variant: "destructive",
-        title: "Registration not sent",
-        description: message,
+        title: "Submission failed",
+        description:
+          err instanceof Error ? err.message : "Try again later.",
       });
     } finally {
       setSubmitting(false);
@@ -90,13 +101,18 @@ const Register = () => {
                 {errors.email && <p className="text-destructive text-xs mt-2">{errors.email}</p>}
               </div>
               <div>
+                <label className="text-xs uppercase tracking-[0.2em] text-primary mb-2 block">Phone (optional)</label>
+                <input name="phone" type="tel" className={field} placeholder="+91 …" autoComplete="tel" />
+                {errors.phone && <p className="text-destructive text-xs mt-2">{errors.phone}</p>}
+              </div>
+              <div>
                 <label className="text-xs uppercase tracking-[0.2em] text-primary mb-2 block">Current City *</label>
                 <input name="city" className={field} placeholder="Hyderabad, Bangalore, ..." />
                 {errors.city && <p className="text-destructive text-xs mt-2">{errors.city}</p>}
               </div>
-              <div className="md:col-span-2">
-                <label className="text-xs uppercase tracking-[0.2em] text-primary mb-2 block">LinkedIn / Profile (optional)</label>
-                <input name="linkedin" className={field} placeholder="https://linkedin.com/in/..." />
+              <div>
+                <label className="text-xs uppercase tracking-[0.2em] text-primary mb-2 block">LinkedIn (optional)</label>
+                <input name="linkedin" className={field} placeholder="linkedin.com/in/…" />
               </div>
               <div className="md:col-span-2">
                 <label className="text-xs uppercase tracking-[0.2em] text-primary mb-2 block">A note for the community (optional)</label>

@@ -3,7 +3,10 @@
  * The script routes on `form`: `register` vs `contact`.
  */
 
-function appsScriptUrl(): string {
+import type { AlumniRegistration } from "@/lib/alumniRegistrationSchema";
+
+/** Base URL for the Google Apps Script web app (`.../macros/s/.../exec`). */
+export function getGoogleAppsScriptWebAppUrl(): string {
   const url = (import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL as string | undefined)?.trim();
   if (!url) {
     throw new Error(
@@ -14,7 +17,7 @@ function appsScriptUrl(): string {
 }
 
 function postToAppsScript(fields: Record<string, string>, logLabel: string): Promise<void> {
-  const url = appsScriptUrl();
+  const url = getGoogleAppsScriptWebAppUrl();
 
   if (import.meta.env.DEV) {
     console.info(`[${logLabel}] POST (no-cors) →`, url);
@@ -24,7 +27,6 @@ function postToAppsScript(fields: Record<string, string>, logLabel: string): Pro
 
   return fetch(url, {
     method: "POST",
-    mode: "no-cors",
     body,
   }).then(() => {
     /* Opaque response */
@@ -32,14 +34,7 @@ function postToAppsScript(fields: Record<string, string>, logLabel: string): Pro
 }
 
 export function submitAlumniRegistrationToGoogleForm(
-  data: {
-    name: string;
-    batch: string;
-    email: string;
-    city: string;
-    linkedin?: string;
-    message?: string;
-  },
+  data: AlumniRegistration,
   volunteer: boolean
 ): Promise<void> {
   return postToAppsScript(
@@ -49,6 +44,8 @@ export function submitAlumniRegistrationToGoogleForm(
       batch: data.batch,
       email: data.email,
       city: data.city,
+      phone: (data.phone ?? "").toString(),
+      alumni_phone: (data.phone ?? "").toString(),
       linkedin: (data.linkedin ?? "").toString(),
       message: (data.message ?? "").toString(),
       volunteer: volunteer ? "Yes" : "No",
